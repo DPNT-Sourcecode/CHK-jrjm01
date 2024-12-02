@@ -24,6 +24,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.9")
 
     testImplementation(kotlin("test"))
+    testImplementation("org.hamcrest:hamcrest:2.2")
 }
 
 tasks.named<JavaExec>("run") {
