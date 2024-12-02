@@ -11,14 +11,14 @@ object CheckoutSolution {
             return -1
         }
         items.forEach { (sku, quantity) ->
-            val threshold = specialOffers[sku]?.first ?: 0
+            val threshold = specialOffers[sku]?.first ?: 1
             val specialPrice = specialOffers[sku]?.second ?: 0
             val normalPrice = priceMapIndividual[sku] ?:
                 throw RuntimeException("We shouldn't get here because we've already checked this")
-            if (specialPrice != 0) {
-                total += quantity / threshold * specialPrice
-            }
-            total += quantity%threshold * normalPrice
+            val numSpecialDeals = quantity / threshold
+            val numNonSpecialItems = quantity - (numSpecialDeals * threshold)
+            total += numSpecialDeals * specialPrice
+            total += numNonSpecialItems * normalPrice
         }
         return total
     }
