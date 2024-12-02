@@ -9,7 +9,7 @@ object CheckoutSolution {
             return -1
         }
         var total = 0
-        val items =  skus.split("").groupingBy { it }.eachCount()
+        val items =  skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount()
         items.forEach { (sku, quantity) ->
             val threshold = specialOffers[sku]?.first ?: 0
             val specialPrice = specialOffers[sku]?.second ?: 0
