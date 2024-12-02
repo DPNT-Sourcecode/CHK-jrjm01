@@ -2,14 +2,14 @@ package solutions.CHK
 
 object CheckoutSolution {
 
-    private val priceMapIndividual = mapOf('A' to 50, 'B' to 30, 'C' to 20, 'D' to 15)
-    private val specialOffers = mapOf('A' to Pair(3, 130), 'B' to Pair(2, 45))
+    private val priceMapIndividual = mapOf("A" to 50, "B" to 30, "C" to 20, "D" to 15)
+    private val specialOffers = mapOf("A" to Pair(3, 130), "B" to Pair(2, 45))
     fun checkout(skus: String): Int {
-        if (skus.any { it !in priceMapIndividual.keys }) {
+        if (skus.any { it.toString() !in priceMapIndividual.keys }) {
             return -1
         }
         var total = 0
-        val items =  skus.toCharArray().groupBy { it }
+        val items =  skus.split("").groupingBy { it }.eachCount()
         items.forEach { (sku, quantity) ->
             val threshold = specialOffers[sku]?.first ?: 0
             val specialPrice = specialOffers[sku]?.second ?: 0
