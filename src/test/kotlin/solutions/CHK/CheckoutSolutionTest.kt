@@ -6,6 +6,6 @@ import org.junit.jupiter.api.Test
 class CheckoutSolutionTest {
     @Test
     fun `working test`() {
-        assertEquals(275, CheckoutSolution.checkout("A, B, A, B, A, A, C, D"))
+        assertEquals(260, CheckoutSolution.checkout("A, B, A, B, A, A, C, D"))
     }
 }
