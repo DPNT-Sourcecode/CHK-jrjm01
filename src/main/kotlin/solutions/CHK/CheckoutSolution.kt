@@ -6,7 +6,7 @@ object CheckoutSolution {
     private val specialOffers = mapOf("A" to Pair(3, 130), "B" to Pair(2, 45))
     fun checkout(skus: String): Int {
         var total = 0
-        val items =  skus.toCharArray(").filter { it.isNotEmpty() }.groupingBy { it }.eachCount()
+        val items =  skus.split(",", " ", "_",  "\n").filter { it.isNotEmpty() }.groupingBy { it }.eachCount()
         if (items.keys.any { it !in priceMapIndividual.keys }) {
             return -1
         }
@@ -27,5 +27,6 @@ object CheckoutSolution {
         return total
     }
 }
+
 
 
