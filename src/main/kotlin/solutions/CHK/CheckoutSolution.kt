@@ -18,7 +18,7 @@ object CheckoutSolution {
             val threshold = 5
             val numSpecialDeals = (quantity / threshold)
             val specialPrice = 200
-            items["A"] = items["A"]!! - (numSpecialDeals * threshold)
+            items["A"] = quantity - (numSpecialDeals * threshold)
             numSpecialDeals * specialPrice
         },
         { items: MutableMap<String, Int> ->
@@ -27,9 +27,8 @@ object CheckoutSolution {
             val threshold = 2
             val numSpecialDeals = (quantityE / threshold) - quantityB
             val specialPrice = 2 * priceMapIndividual["E"]!! - priceMapIndividual["B"]!!
-            items["E"]!!.dec()
-            items["E"]!!.dec()
-            items["B"]!!.dec()
+            items["E"] = quantityE - (numSpecialDeals * threshold)
+            items["B"] = quantityB - numSpecialDeals
             numSpecialDeals * specialPrice
         },
         { items: MutableMap<String, Int> ->
@@ -37,13 +36,15 @@ object CheckoutSolution {
             val threshold = 3
             val numSpecialDeals = (quantity / threshold)
             val specialPrice = 130
+            items["A"] = quantity - (numSpecialDeals * threshold)
             numSpecialDeals * specialPrice
         },
         { items: MutableMap<String, Int>  ->
-            val quantity = items["A"] ?: 0
+            val quantity = items["B"] ?: 0
             val threshold = 2
             val numSpecialDeals = (quantity / threshold)
             val specialPrice = 45
+            items["B"] = quantity - (numSpecialDeals * threshold)
             numSpecialDeals * specialPrice
         },
     )
@@ -68,6 +69,3 @@ object CheckoutSolution {
         return total
     }
 }
-
-
-
