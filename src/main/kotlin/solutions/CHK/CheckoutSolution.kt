@@ -1,5 +1,7 @@
 package solutions.CHK
 
+import kotlin.math.max
+
 object CheckoutSolution {
 
     private val priceMapIndividual = mapOf(
@@ -24,10 +26,10 @@ object CheckoutSolution {
         { items: MutableMap<String, Int> ->
             val quantityE = items["E"] ?: 0
             val quantityB = items["B"] ?: 0
-            val threshold = 2
-            val numSpecialDeals = (quantityE / threshold) - quantityB
+            val thresholdE = 2
+            val numSpecialDeals = max(quantityE / thresholdE, quantityB)
             val specialPrice = 2 * priceMapIndividual["E"]!! - priceMapIndividual["B"]!!
-            items["E"] = quantityE - (numSpecialDeals * threshold)
+            items["E"] = quantityE - (numSpecialDeals * thresholdE)
             items["B"] = quantityB - numSpecialDeals
             numSpecialDeals * specialPrice
         },
