@@ -12,7 +12,7 @@ object CheckoutSolution {
     private val specialOffers = mapOf(
         "A" to Pair(3, 130),
         "B" to Pair(2, 45),
-        "E" to Pair(2, 2 * priceMapIndividual["E"]!! - priceMapIndividual["B"]!!)
+        "E" to Pair(2, 2 * priceMapIndividual["E"]!! - priceMapIndividual["B"]!!) // !! is only safe because we will have already checked for values not in the map
     )
     fun checkout(skus: String): Int {
         if (skus.any { it.toString() !in priceMapIndividual.keys }) {
