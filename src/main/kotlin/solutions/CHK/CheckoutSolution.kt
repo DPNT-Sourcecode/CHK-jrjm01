@@ -13,14 +13,15 @@ object CheckoutSolution {
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
-        { items: Map<String, Int> ->
+        { items: MutableMap<String, Int> ->
             val quantity = items["A"]!!
             val threshold = 5
             val numSpecialDeals = (quantity / threshold)
             val specialPrice = 200
-            numSpecialDeals * specialPrice to items
+            items["A"] = items["A"]!! - (numSpecialDeals * threshold)
+            numSpecialDeals * specialPrice
         },
-        { items: Map<String, Int> ->
+        { items: MutableMap<String, Int> ->
             val quantityE = items["E"]!!
             val quantityB = items["E"]!!
             val threshold = 2
@@ -29,21 +30,21 @@ object CheckoutSolution {
             items["E"]!!.dec()
             items["E"]!!.dec()
             items["B"]!!.dec()
-            numSpecialDeals * specialPrice to items
+            numSpecialDeals * specialPrice
         },
-        { items: Map<String, Int> ->
+        { items: MutableMap<String, Int> ->
             val quantity = items["A"]!!
             val threshold = 3
             val numSpecialDeals = (quantity / threshold)
             val specialPrice = 130
-            numSpecialDeals * specialPrice to items
+            numSpecialDeals * specialPrice
         },
-        { items: Map<String, Int>  ->
+        { items: MutableMap<String, Int>  ->
             val quantity = items["A"]!!
             val threshold = 2
             val numSpecialDeals = (quantity / threshold)
             val specialPrice = 45
-            numSpecialDeals * specialPrice to items
+            numSpecialDeals * specialPrice
         },
     )
     fun checkout(skus: String): Int {
@@ -77,4 +78,5 @@ object CheckoutSolution {
         return total
     }
 }
+
 
