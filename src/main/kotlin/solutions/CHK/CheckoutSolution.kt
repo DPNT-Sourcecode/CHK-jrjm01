@@ -14,7 +14,7 @@ object CheckoutSolution {
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
         { items: MutableMap<String, Int> ->
-            val quantity = items["A"]!!
+            val quantity = items["A"] ?: 0
             val threshold = 5
             val numSpecialDeals = (quantity / threshold)
             val specialPrice = 200
@@ -22,8 +22,8 @@ object CheckoutSolution {
             numSpecialDeals * specialPrice
         },
         { items: MutableMap<String, Int> ->
-            val quantityE = items["E"]!!
-            val quantityB = items["E"]!!
+            val quantityE = items["E"] ?: 0
+            val quantityB = items["B"] ?: 0
             val threshold = 2
             val numSpecialDeals = (quantityE / threshold) - quantityB
             val specialPrice = 2 * priceMapIndividual["E"]!! - priceMapIndividual["B"]!!
@@ -33,14 +33,14 @@ object CheckoutSolution {
             numSpecialDeals * specialPrice
         },
         { items: MutableMap<String, Int> ->
-            val quantity = items["A"]!!
+            val quantity = items["A"] ?: 0
             val threshold = 3
             val numSpecialDeals = (quantity / threshold)
             val specialPrice = 130
             numSpecialDeals * specialPrice
         },
         { items: MutableMap<String, Int>  ->
-            val quantity = items["A"]!!
+            val quantity = items["A"] ?: 0
             val threshold = 2
             val numSpecialDeals = (quantity / threshold)
             val specialPrice = 45
@@ -52,31 +52,22 @@ object CheckoutSolution {
             return -1
         }
         var total = 0
-        val items =  skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount()
+        val items =  skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount().toMutableMap()
 
-        // Calculate special offers first
-        specialOffers.forEach { sku, newPriceFn ->
-
+        // Calculate special offers first (this will mutate the map!)
+        specialOffers.forEach { newPriceFn ->
+            total += newPriceFn(items)
         }
 
         // Calculate what's left at normal price
         items.forEach { (sku, quantity) ->
-
-            val threshold = specialOffers[sku]?.first ?: 0
-            val specialPrice = specialOffers[sku]?.second?.invoke(items) ?: 0
             val normalPrice = priceMapIndividual[sku] ?:
                 throw RuntimeException("We shouldn't get here because we've already checked this")
-            val numSpecialDeals = if (threshold == 0) {
-                0
-            } else {
-                quantity / threshold
-            }
-            val numNonSpecialItems = quantity - (numSpecialDeals * threshold)
-            total += numSpecialDeals * specialPrice
-            total += numNonSpecialItems * normalPrice
+            total += quantity * normalPrice
         }
         return total
     }
 }
+
 
 
