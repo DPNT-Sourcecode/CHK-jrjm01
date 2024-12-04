@@ -9,16 +9,42 @@ object CheckoutSolution {
         "D" to 15,
         "E" to 40,
     )
-    private val specialOffers = mapOf(
-        "A" to Pair(3) {_ -> 130 },
-        "B" to Pair(2) {_ -> 45 },
-        "E" to Pair(2) { items: Map<String, Int> ->
-            if (items["B"]!! > 0) {
-                2 * priceMapIndividual["E"]!! - priceMapIndividual["B"]!!
-            } else {
-                2 * priceMapIndividual["E"]!!
-            }
-        } // !! is only safe because we will have already checked for values not in the map
+
+    // These must be ordered by the value they save to get the customer the best price
+    // !! is only safe because we will have already checked for values not in the map
+    private val specialOffers = listOf(
+        { items: Map<String, Int> ->
+            val quantity = items["A"]!!
+            val threshold = 5
+            val numSpecialDeals = (quantity / threshold)
+            val specialPrice = 200
+            numSpecialDeals * specialPrice to items
+        },
+        { items: Map<String, Int> ->
+            val quantityE = items["E"]!!
+            val quantityB = items["E"]!!
+            val threshold = 2
+            val numSpecialDeals = (quantityE / threshold) - quantityB
+            val specialPrice = 2 * priceMapIndividual["E"]!! - priceMapIndividual["B"]!!
+            items["E"]!!.dec()
+            items["E"]!!.dec()
+            items["B"]!!.dec()
+            numSpecialDeals * specialPrice to items
+        },
+        { items: Map<String, Int> ->
+            val quantity = items["A"]!!
+            val threshold = 3
+            val numSpecialDeals = (quantity / threshold)
+            val specialPrice = 130
+            numSpecialDeals * specialPrice to items
+        },
+        { items: Map<String, Int>  ->
+            val quantity = items["A"]!!
+            val threshold = 2
+            val numSpecialDeals = (quantity / threshold)
+            val specialPrice = 45
+            numSpecialDeals * specialPrice to items
+        },
     )
     fun checkout(skus: String): Int {
         if (skus.any { it.toString() !in priceMapIndividual.keys }) {
@@ -26,7 +52,15 @@ object CheckoutSolution {
         }
         var total = 0
         val items =  skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount()
+
+        // Calculate special offers first
+        specialOffers.forEach { sku, newPriceFn ->
+
+        }
+
+        // Calculate what's left at normal price
         items.forEach { (sku, quantity) ->
+
             val threshold = specialOffers[sku]?.first ?: 0
             val specialPrice = specialOffers[sku]?.second?.invoke(items) ?: 0
             val normalPrice = priceMapIndividual[sku] ?:
@@ -43,3 +77,4 @@ object CheckoutSolution {
         return total
     }
 }
+
