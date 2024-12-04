@@ -21,4 +21,10 @@ class CheckoutSolutionTest {
         assertEquals(180, CheckoutSolution.checkout("ABAEE"))
         assertEquals(110, CheckoutSolution.checkout("BBEE"))
     }
+
+    @Test
+    fun `5A and 4A is 200`() {
+        assertEquals(200, CheckoutSolution.checkout("AAAAA"))
+        assertEquals(200, CheckoutSolution.checkout("AAAA"))
+    }
 }

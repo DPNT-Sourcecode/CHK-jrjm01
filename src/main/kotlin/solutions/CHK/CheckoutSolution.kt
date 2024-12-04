@@ -1,6 +1,7 @@
 package solutions.CHK
 
 import kotlin.math.max
+import kotlin.math.min
 
 object CheckoutSolution {
 
@@ -27,8 +28,8 @@ object CheckoutSolution {
             val quantityE = items["E"] ?: 0
             val quantityB = items["B"] ?: 0
             val thresholdE = 2
-            val numSpecialDeals = max(quantityE / thresholdE, quantityB)
-            val specialPrice = 2 * priceMapIndividual["E"]!! - priceMapIndividual["B"]!!
+            val numSpecialDeals = min(quantityE / thresholdE, quantityB)
+            val specialPrice = 2 * priceMapIndividual["E"]!!
             items["E"] = quantityE - (numSpecialDeals * thresholdE)
             items["B"] = quantityB - numSpecialDeals
             numSpecialDeals * specialPrice
