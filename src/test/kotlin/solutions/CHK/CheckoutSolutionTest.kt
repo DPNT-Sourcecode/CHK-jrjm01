@@ -30,6 +30,12 @@ class CheckoutSolutionTest {
     }
 
     @Test
+    fun `2F get F free`() {
+        assertEquals(20, CheckoutSolution.checkout("FFF"))
+        assertEquals(165, CheckoutSolution.checkout("BAAFFBF"))
+    }
+
+    @Test
     fun `lots of special offers`() {
         assertEquals(400, CheckoutSolution.checkout("AEEABABAAEEE"))
     }
