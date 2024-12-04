@@ -9,7 +9,11 @@ object CheckoutSolution {
         "D" to 15,
         "E" to 40,
     )
-    private val specialOffers = mapOf("A" to Pair(3, 130), "B" to Pair(2, 45))
+    private val specialOffers = mapOf(
+        "A" to Pair(3, 130),
+        "B" to Pair(2, 45),
+        "E" to Pair(2, 2 * priceMapIndividual["E"]!! - priceMapIndividual["B"]!!)
+    )
     fun checkout(skus: String): Int {
         if (skus.any { it.toString() !in priceMapIndividual.keys }) {
             return -1
@@ -33,3 +37,4 @@ object CheckoutSolution {
         return total
     }
 }
+
