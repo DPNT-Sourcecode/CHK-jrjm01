@@ -11,11 +11,13 @@ object CheckoutSolution {
         "C" to 20,
         "D" to 15,
         "E" to 40,
+        "F" to 10,
     )
 
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
+        // Saves 50
         { items: MutableMap<String, Int> ->
             val quantity = items["A"] ?: 0
             val threshold = 5
@@ -24,6 +26,7 @@ object CheckoutSolution {
             items["A"] = quantity - (numSpecialDeals * threshold)
             numSpecialDeals * specialPrice
         },
+        // Saves 30 (B price)
         { items: MutableMap<String, Int> ->
             val quantityE = items["E"] ?: 0
             val quantityB = items["B"] ?: 0
@@ -34,6 +37,7 @@ object CheckoutSolution {
             items["B"] = quantityB - numSpecialDeals
             numSpecialDeals * specialPrice
         },
+        // Saves 20
         { items: MutableMap<String, Int> ->
             val quantity = items["A"] ?: 0
             val threshold = 3
@@ -42,12 +46,22 @@ object CheckoutSolution {
             items["A"] = quantity - (numSpecialDeals * threshold)
             numSpecialDeals * specialPrice
         },
+        // Saves 15
         { items: MutableMap<String, Int>  ->
             val quantity = items["B"] ?: 0
             val threshold = 2
             val numSpecialDeals = (quantity / threshold)
             val specialPrice = 45
             items["B"] = quantity - (numSpecialDeals * threshold)
+            numSpecialDeals * specialPrice
+        },
+        // Saves 10
+        { items: MutableMap<String, Int>  ->
+            val quantity = items["F"] ?: 0
+            val threshold = 3
+            val numSpecialDeals = (quantity / threshold)
+            val specialPrice = 20
+            items["F"] = quantity - (numSpecialDeals * threshold)
             numSpecialDeals * specialPrice
         },
     )
@@ -72,3 +86,4 @@ object CheckoutSolution {
         return total
     }
 }
+
