@@ -10,12 +10,11 @@ object CheckoutSolution {
         "E" to 40,
     )
     private val specialOffers = mapOf(
-        "A" to Pair(3) { 130 },
-        "B" to Pair(2) { 45 },
+        "A" to Pair(3) {_ -> 130 },
+        "B" to Pair(2) {_ -> 45 },
         "E" to Pair(2) { items: Map<String, Int> ->
             if (items["B"]!! > 0) {
                 2 * priceMapIndividual["E"]!! - priceMapIndividual["B"]!!
-                items["B"]!!.dec()
             } else {
                 2 * priceMapIndividual["E"]!!
             }
@@ -29,7 +28,7 @@ object CheckoutSolution {
         val items =  skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount()
         items.forEach { (sku, quantity) ->
             val threshold = specialOffers[sku]?.first ?: 0
-            val specialPrice = specialOffers[sku]?.second.invoke(items) ?: 0
+            val specialPrice = specialOffers[sku]?.second?.invoke(items) ?: 0
             val normalPrice = priceMapIndividual[sku] ?:
                 throw RuntimeException("We shouldn't get here because we've already checked this")
             val numSpecialDeals = if (threshold == 0) {
