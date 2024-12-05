@@ -52,9 +52,9 @@ object CheckoutSolution {
         val items =  skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount().toMutableMap()
 
         // Calculate special offers first (this will mutate the map!)
-        specialOffers.forEach { (sku, threshold, specialPrice, priceFn) ->
-            total += priceFn(sku, threshold)
-        }
+//        specialOffers.forEach { (sku, threshold, specialPrice, priceFn) ->
+//            total += priceFn(sku, threshold)
+//        }
 
         // Calculate what's left at normal price
         items.forEach { (sku, quantity) ->
@@ -65,6 +65,7 @@ object CheckoutSolution {
         return total
     }
 }
+
 
 
 
