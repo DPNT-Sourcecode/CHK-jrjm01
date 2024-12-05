@@ -6,9 +6,10 @@ object CheckoutSolution {
 
     private interface SpecialOfferTerms {
         fun totalValueSaved() : Int
+        fun calculatePriceAndUpdateItems(items: MutableMap<String, Int>) : Int
     }
 
-    private data class Multibuy(
+    private data class MultiBuy(
         val sku: String,
         val threshold: Int,
         val specialPrice: Int,
@@ -16,6 +17,13 @@ object CheckoutSolution {
         override fun totalValueSaved(): Int {
             val originalPrice = priceMap[sku]!! * threshold
             return originalPrice - specialPrice
+        }
+
+        override fun calculatePriceAndUpdateItems(items: MutableMap<String, Int>): Int {
+            val quantity = items[sku] ?: 0
+            val numSpecialDeals = quantity / threshold
+            items[sku] = quantity - (numSpecialDeals * threshold)
+            return numSpecialDeals * specialPrice
         }
     }
 
@@ -63,21 +71,21 @@ object CheckoutSolution {
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
-        Multibuy("A", 5, 200),
-        Multibuy("A", 3, 130),
-        Multibuy("B", 2, 45),
+        MultiBuy("A", 5, 200),
+        MultiBuy("A", 3, 130),
+        MultiBuy("B", 2, 45),
         GetOneFree("E", 2, 80, "B"),
-        Multibuy("F", 3, 20),
-        Multibuy("H", 5, 45),
-        Multibuy("H", 10, 80),
-        Multibuy("K", 2, 150),
+        MultiBuy("F", 3, 20),
+        MultiBuy("H", 5, 45),
+        MultiBuy("H", 10, 80),
+        MultiBuy("K", 2, 150),
         GetOneFree("N", 3, 120, "M"),
-        Multibuy("P", 5, 200),
-        Multibuy("Q", 3, 80),
+        MultiBuy("P", 5, 200),
+        MultiBuy("Q", 3, 80),
         GetOneFree("R", 3, 150, "Q"),
-        Multibuy("U", 4, 120),
-        Multibuy("V", 2, 90),
-        Multibuy("V", 3, 130),
+        MultiBuy("U", 4, 120),
+        MultiBuy("V", 2, 90),
+        MultiBuy("V", 3, 130),
     ).sortedByDescending { it.totalValueSaved() }
 
     private val specialOfferPrice = { sku: String,
@@ -114,3 +122,4 @@ object CheckoutSolution {
         return total
     }
 }
+
