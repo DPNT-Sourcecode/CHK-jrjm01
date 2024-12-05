@@ -18,15 +18,12 @@ object CheckoutSolution {
                                        threshold: Int,
                                        specialPrice: Int,
                                        skuB: String?,
-                                       quantityB: Int?,
                                        items: MutableMap<String, Int> ->
         val quantity = items[sku] ?: 0
+        val quantityB = skuB?.let { items[skuB] } ?: 0
         val numSpecialDeals = min(quantity / threshold, quantityB ?: 0)
         items[sku] = quantity - (numSpecialDeals * threshold)
-        if (skuB != null) {
-            val quantityB = items[skuB] ?: 0
-            items[skuB] = quantityB - numSpecialDeals
-        }
+        skuB?.let { items[skuB] = quantityB - numSpecialDeals }
         numSpecialDeals * specialPrice
     }
 
@@ -68,7 +65,7 @@ object CheckoutSolution {
 
         // Calculate special offers first (this will mutate the map!)
         specialOffers.forEach { (sku, threshold, specialPrice, skuB) ->
-            total += singleItemMultiBuy(sku, threshold, specialPrice, skuB)
+            total += singleItemMultiBuy(sku, threshold, specialPrice, skuB, items)
         }
 
         // Calculate what's left at normal price
@@ -80,3 +77,4 @@ object CheckoutSolution {
         return total
     }
 }
+
