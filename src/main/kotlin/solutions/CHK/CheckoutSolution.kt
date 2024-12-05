@@ -1,6 +1,7 @@
 package solutions.CHK
 
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 object CheckoutSolution {
 
@@ -56,7 +57,9 @@ object CheckoutSolution {
     ) : SpecialOfferTerms {
 
         override fun totalValueSaved(): Int {
-            val originalPrice = skus.s { priceMap[it]!! } * threshold + priceMap[freeItemSku]!!
+            // In this case it's the average amount saved, which doesn't guarantee the best saving if
+            // the skus are involved in other deals but that's not how we're discounting just yet.
+            val originalPrice = skus.map { priceMap[it]!! }.average().roundToInt() * threshold
             return originalPrice - specialPrice
         }
 
@@ -153,6 +156,7 @@ object CheckoutSolution {
         return total
     }
 }
+
 
 
 
