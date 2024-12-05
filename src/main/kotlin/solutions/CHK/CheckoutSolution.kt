@@ -40,7 +40,15 @@ object CheckoutSolution {
         val threshold: Int,
         val specialPrice: Int,
         val freeItem: String? = null
-    )
+    ) {
+        fun totalValueSaved() {
+            val originalPrice =
+                (priceMapIndividual[sku]!! * threshold) +
+                        (freeItem?.let { priceMapIndividual[freeItem]!! } ?: 0)
+            return specialPrice - originalPrice
+        }
+    }
+
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
@@ -61,7 +69,7 @@ object CheckoutSolution {
             return -1
         }
         var total = 0
-        val items =  skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount().toMutableMap()
+        val items = skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount().toMutableMap()
 
         // Calculate special offers first (this will mutate the map!)
         specialOffers.forEach { (sku, threshold, specialPrice, skuB) ->
@@ -70,11 +78,12 @@ object CheckoutSolution {
 
         // Calculate what's left at normal price
         items.forEach { (sku, quantity) ->
-            val normalPrice = priceMapIndividual[sku] ?:
-                throw RuntimeException("We shouldn't get here because we've already checked this")
+            val normalPrice = priceMapIndividual[sku]
+                ?: throw RuntimeException("We shouldn't get here because we've already checked this")
             total += quantity * normalPrice
         }
         return total
     }
 }
+
 
