@@ -50,6 +50,7 @@ object CheckoutSolution {
         }
     }
 
+    // When defining a group discount, order the skus by most expensive to ensure best saving for the customer
     private data class GroupDiscount(
         val skus: List<String>,
         val threshold: Int,
@@ -64,9 +65,12 @@ object CheckoutSolution {
         }
 
         override fun calculatePriceAndUpdateItems(items: MutableMap<String, Int>): Int {
-            val quantity = items[sku] ?: 0
-            val quantityB = items[freeItemSku] ?: 0
-            val numSpecialDeals = min(quantity / threshold, quantityB)
+            val offerItems = items.filter { it.key in skus }.sor
+            val quantity = offerItems.values.sum()
+            val numSpecialDeals = quantity / threshold
+            repeat(numSpecialDeals) {
+
+            }
             items[sku] = quantity - (numSpecialDeals * threshold)
             items[freeItemSku] = quantityB - numSpecialDeals
             return numSpecialDeals * specialPrice
@@ -156,6 +160,7 @@ object CheckoutSolution {
         return total
     }
 }
+
 
 
 
