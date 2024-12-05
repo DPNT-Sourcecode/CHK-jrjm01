@@ -65,7 +65,8 @@ object CheckoutSolution {
         }
 
         override fun calculatePriceAndUpdateItems(items: MutableMap<String, Int>): Int {
-            val offerItems = items.filter { it.key in skus }.map { skus.associateBy { it } }
+            val offerItems = items.filter { it.key in skus }
+                val orderItems = skus.map { it }
             val quantity = offerItems.values.sum()
             val numSpecialDeals = quantity / threshold
             repeat(numSpecialDeals) {
@@ -160,6 +161,7 @@ object CheckoutSolution {
         return total
     }
 }
+
 
 
 
