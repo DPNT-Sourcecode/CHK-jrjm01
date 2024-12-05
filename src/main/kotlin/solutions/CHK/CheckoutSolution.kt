@@ -115,7 +115,7 @@ object CheckoutSolution {
         MultiBuy("F", 3, 20),
         MultiBuy("H", 5, 45),
         MultiBuy("H", 10, 80),
-        MultiBuy("K", 2, 150),
+        MultiBuy("K", 2, 120),
         GetOneFree("N", 3, 120, "M"),
         MultiBuy("P", 5, 200),
         MultiBuy("Q", 3, 80),
@@ -147,3 +147,4 @@ object CheckoutSolution {
         return total
     }
 }
+
