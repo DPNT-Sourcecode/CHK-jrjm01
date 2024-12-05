@@ -56,7 +56,7 @@ object CheckoutSolution {
     ) : SpecialOfferTerms {
 
         override fun totalValueSaved(): Int {
-            val originalPrice = priceMap[sku]!! * threshold + priceMap[freeItemSku]!!
+            val originalPrice = skus.s { priceMap[it]!! } * threshold + priceMap[freeItemSku]!!
             return originalPrice - specialPrice
         }
 
@@ -153,5 +153,6 @@ object CheckoutSolution {
         return total
     }
 }
+
 
 
