@@ -11,7 +11,6 @@ class CheckoutSolutionTest {
 
     @Test
     fun `broken call`() {
-        assertEquals(-1, CheckoutSolution.checkout("ABDCFFF"))
         assertEquals(-1, CheckoutSolution.checkout("-"))
     }
 

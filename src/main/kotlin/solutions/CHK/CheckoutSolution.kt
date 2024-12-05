@@ -21,7 +21,7 @@ object CheckoutSolution {
                                        items: MutableMap<String, Int> ->
         val quantity = items[sku] ?: 0
         val quantityB = skuB?.let { items[skuB] } ?: 0
-        val numSpecialDeals = min(quantity / threshold, quantityB ?: 0)
+        val numSpecialDeals = min(quantity / threshold, quantityB ?: Int.MAX)
         items[sku] = quantity - (numSpecialDeals * threshold)
         skuB?.let { items[skuB] = quantityB - numSpecialDeals }
         numSpecialDeals * specialPrice
@@ -77,4 +77,5 @@ object CheckoutSolution {
         return total
     }
 }
+
 
