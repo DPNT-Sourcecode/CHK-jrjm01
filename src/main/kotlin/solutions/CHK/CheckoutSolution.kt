@@ -4,16 +4,29 @@ import kotlin.math.min
 
 object CheckoutSolution {
 
-    private data class SpecialOfferTerms(
+    private interface SpecialOfferTerms {
+        fun totalValueSaved() : Int
+    }
+
+    private data class Multibuy(
         val sku: String,
         val threshold: Int,
         val specialPrice: Int,
-        val freeItem: String? = null
-    ) {
-        fun totalValueSaved(): Int {
-            val originalPrice =
-                (priceMap[sku]!! * threshold) +
-                        (freeItem?.let { priceMap[freeItem]!! } ?: 0)
+    ) : SpecialOfferTerms {
+        override fun totalValueSaved(): Int {
+            val originalPrice = priceMap[sku]!! * threshold
+            return originalPrice - specialPrice
+        }
+    }
+
+    private data class GetOneFree(
+        val sku: String,
+        val threshold: Int,
+        val specialPrice: Int,
+        val freeItem: String
+    ) : SpecialOfferTerms {
+        override fun totalValueSaved(): Int {
+            val originalPrice = priceMap[sku]!! * threshold + priceMap[freeItem]
             return originalPrice - specialPrice
         }
     }
@@ -50,21 +63,21 @@ object CheckoutSolution {
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
-        SpecialOfferTerms("A", 5, 200),
-        SpecialOfferTerms("A", 3, 130),
-        SpecialOfferTerms("B", 2, 45),
-        SpecialOfferTerms("E", 2, 80, "B"),
-        SpecialOfferTerms("F", 3, 20),
-        SpecialOfferTerms("H", 5, 45),
-        SpecialOfferTerms("H", 10, 80),
-        SpecialOfferTerms("K", 2, 150),
-        SpecialOfferTerms("N", 3, 120, "M"),
-        SpecialOfferTerms("P", 5, 200),
-        SpecialOfferTerms("Q", 3, 80),
-        SpecialOfferTerms("R", 3, 150, "Q"),
-        SpecialOfferTerms("U", 4, 120),
-        SpecialOfferTerms("V", 2, 90),
-        SpecialOfferTerms("V", 3, 130),
+        Multibuy("A", 5, 200),
+        Multibuy("A", 3, 130),
+        Multibuy("B", 2, 45),
+        GetOneFree("E", 2, 80, "B"),
+        Multibuy("F", 3, 20),
+        Multibuy("H", 5, 45),
+        Multibuy("H", 10, 80),
+        Multibuy("K", 2, 150),
+        GetOneFree("N", 3, 120, "M"),
+        Multibuy("P", 5, 200),
+        Multibuy("Q", 3, 80),
+        GetOneFree("R", 3, 150, "Q"),
+        Multibuy("U", 4, 120),
+        Multibuy("V", 2, 90),
+        Multibuy("V", 3, 130),
     ).sortedByDescending { it.totalValueSaved() }
 
     private val specialOfferPrice = { sku: String,
