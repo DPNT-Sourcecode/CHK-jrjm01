@@ -28,6 +28,7 @@ object CheckoutSolution {
         val newQuantityB = quantityB - numSpecialDeals
         numSpecialDeals * specialPrice to newQuantityA to newQuantityB
     }
+
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
@@ -42,6 +43,7 @@ object CheckoutSolution {
         // Saves 10
         "F" to 3 to 10 to singleItemMultiBuy,
     )
+
     fun checkout(skus: String): Int {
         if (skus.any { it.toString() !in priceMapIndividual.keys }) {
             return -1
@@ -50,8 +52,8 @@ object CheckoutSolution {
         val items =  skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount().toMutableMap()
 
         // Calculate special offers first (this will mutate the map!)
-        specialOffers.forEach { newPriceFn ->
-            total += newPriceFn(items)
+        specialOffers.forEach { (sku, threshold, specialPrice, priceFn) ->
+            total += priceFn(sku, threshold)
         }
 
         // Calculate what's left at normal price
@@ -63,5 +65,6 @@ object CheckoutSolution {
         return total
     }
 }
+
 
 
