@@ -4,6 +4,20 @@ import kotlin.math.min
 
 object CheckoutSolution {
 
+    private data class SpecialOfferTerms(
+        val sku: String,
+        val threshold: Int,
+        val specialPrice: Int,
+        val freeItem: String? = null
+    ) {
+        fun totalValueSaved(): Int {
+            val originalPrice =
+                (priceMap[sku]!! * threshold) +
+                        (freeItem?.let { priceMap[freeItem]!! } ?: 0)
+            return originalPrice - specialPrice
+        }
+    }
+
     private val priceMap = mapOf(
         "A" to 50,
         "B" to 30,
@@ -33,33 +47,6 @@ object CheckoutSolution {
         "Z" to 50,
     )
 
-    private val specialOfferPrice = { sku: String,
-                                      threshold: Int,
-                                      specialPrice: Int,
-                                      skuB: String?,
-                                      items: MutableMap<String, Int> ->
-        val quantity = items[sku] ?: 0
-        val quantityB = skuB?.let { items[skuB] ?: 0 } ?: Int.MAX_VALUE
-        val numSpecialDeals = min(quantity / threshold, quantityB)
-        items[sku] = quantity - (numSpecialDeals * threshold)
-        skuB?.let { items[skuB] = quantityB - numSpecialDeals }
-        numSpecialDeals * specialPrice
-    }
-
-    private data class SpecialOfferTerms(
-        val sku: String,
-        val threshold: Int,
-        val specialPrice: Int,
-        val freeItem: String? = null
-    ) {
-        fun totalValueSaved(): Int {
-            val originalPrice =
-                (priceMap[sku]!! * threshold) +
-                        (freeItem?.let { priceMap[freeItem]!! } ?: 0)
-            return specialPrice - originalPrice
-        }
-    }
-
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
@@ -73,7 +60,22 @@ object CheckoutSolution {
         SpecialOfferTerms("E", 2, 80, "B"),
         // Saves 10
         SpecialOfferTerms("F", 3, 20),
+        SpecialOfferTerms("H", 5, 45),
+        SpecialOfferTerms("H", 10, 80),
     ).sortedByDescending { it.totalValueSaved() }
+
+    private val specialOfferPrice = { sku: String,
+                                      threshold: Int,
+                                      specialPrice: Int,
+                                      skuB: String?,
+                                      items: MutableMap<String, Int> ->
+        val quantity = items[sku] ?: 0
+        val quantityB = skuB?.let { items[skuB] ?: 0 } ?: Int.MAX_VALUE
+        val numSpecialDeals = min(quantity / threshold, quantityB)
+        items[sku] = quantity - (numSpecialDeals * threshold)
+        skuB?.let { items[skuB] = quantityB - numSpecialDeals }
+        numSpecialDeals * specialPrice
+    }
 
     fun checkout(skus: String): Int {
         if (skus.any { it.toString() !in priceMap.keys }) {
@@ -96,6 +98,7 @@ object CheckoutSolution {
         return total
     }
 }
+
 
 
 
