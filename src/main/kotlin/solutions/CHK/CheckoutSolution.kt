@@ -53,7 +53,7 @@ object CheckoutSolution {
         // Saves 15
         SpecialOfferTerms("B", 2, 45),
         // Saves 10
-        SpecialOfferTerms("F", 3, 10),
+        SpecialOfferTerms("F", 3, 20),
     )
 
     fun checkout(skus: String): Int {
