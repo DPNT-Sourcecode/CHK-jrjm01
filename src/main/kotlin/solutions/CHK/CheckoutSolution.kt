@@ -21,35 +21,42 @@ object CheckoutSolution {
                                        quantityB: Int?,
                                        items: MutableMap<String, Int> ->
         val quantity = items[sku] ?: 0
-        val numSpecialDeals = (quantity / threshold)
+        val numSpecialDeals = min(quantity / threshold, quantityB ?: 0)
         items[sku] = quantity - (numSpecialDeals * threshold)
-        if (quantityB != null && skuB != null) {
+        if (skuB != null) {
+            val quantityB = items[skuB] ?: 0
             items[skuB] = quantityB - numSpecialDeals
         }
         numSpecialDeals * specialPrice
     }
 
-    private val buySomeGetSomeFree = { skuA: String, quantityA: Int, quantityB: Int?, thresholdA: Int ->
-        val numSpecialDeals = min(quantityA / thresholdA, quantityB)
-        val specialPrice = thresholdA * priceMapIndividual[skuA]!!
-        val newQuantityA = quantityA - (numSpecialDeals * thresholdA)
-        val newQuantityB = quantityB - numSpecialDeals
-        numSpecialDeals * specialPrice to newQuantityA to newQuantityB
-    }
+//    private val buySomeGetSomeFree = { skuA: String, quantityA: Int, quantityB: Int?, thresholdA: Int ->
+//        val numSpecialDeals = min(quantityA / thresholdA, quantityB)
+//        val specialPrice = thresholdA * priceMapIndividual[skuA]!!
+//        val newQuantityA = quantityA - (numSpecialDeals * thresholdA)
+//        val newQuantityB = quantityB - numSpecialDeals
+//        numSpecialDeals * specialPrice to newQuantityA to newQuantityB
+//    }
 
+    private data class SpecialOfferTerms(
+        val sku: String,
+        val threshold: Int,
+        val specialPrice: Int,
+        val freeItem: String? = null
+    )
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
         // Saves 50
-        "A" to 5 to 200 to singleItemMultiBuy,
+        SpecialOfferTerms("A", 5, 200),
         // Saves 30 (B price)
-        "E" to 2 to 1 to buySomeGetSomeFree,
+        SpecialOfferTerms("E", 2, 80, "B"),
         // Saves 20
-        "A" to 3 to 130 to singleItemMultiBuy,
+        SpecialOfferTerms("A", 3, 130),
         // Saves 15
-        "B" to 2 to 45 to singleItemMultiBuy,
+        SpecialOfferTerms("B", 2, 45),
         // Saves 10
-        "F" to 3 to 10 to singleItemMultiBuy,
+        SpecialOfferTerms("F", 3, 10),
     )
 
     fun checkout(skus: String): Int {
@@ -60,8 +67,8 @@ object CheckoutSolution {
         val items =  skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount().toMutableMap()
 
         // Calculate special offers first (this will mutate the map!)
-        specialOffers.forEach { (sku, threshold, specialPrice, priceFn) ->
-            total += priceFn(sku, threshold)
+        specialOffers.forEach { (sku, threshold, specialPrice, skuB) ->
+            total += singleItemMultiBuy(sku, threshold, specialPrice, skuB)
         }
 
         // Calculate what's left at normal price
