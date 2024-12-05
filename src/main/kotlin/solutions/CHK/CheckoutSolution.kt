@@ -17,29 +17,23 @@ object CheckoutSolution {
     private val singleItemMultiBuy = { sku: String, threshold: Int, specialPrice: Int, items: MutableMap<String, Int> ->
         val quantity = items[sku] ?: 0
         val numSpecialDeals = (quantity / threshold)
-        items[sku] = quantity - (numSpecialDeals * threshold)
-        numSpecialDeals * specialPrice
+        val newQuantity = quantity - (numSpecialDeals * threshold)
+        numSpecialDeals * specialPrice to newQuantity
     }
+
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
         // Saves 50
-        singleItemMultiBuy("A", 5, 200, )
-        { sku: String, threshold: Int, specialPrice: Int, items: MutableMap<String, Int> ->
-            val quantity = items[sku] ?: 0
-            val numSpecialDeals = (quantity / threshold)
-            items[sku] = quantity - (numSpecialDeals * threshold)
-            numSpecialDeals * specialPrice
-        },
+        "A" to 5 to 200 to singleItemMultiBuy,
+        // Saves 20
+        "A" to 3 to 200 to singleItemMultiBuy,
         // Saves 30 (B price)
-        { items: MutableMap<String, Int> ->
-            val quantityE = items["E"] ?: 0
-            val quantityB = items["B"] ?: 0
-            val thresholdE = 2
-            val numSpecialDeals = min(quantityE / thresholdE, quantityB)
-            val specialPrice = 2 * priceMapIndividual["E"]!!
-            items["E"] = quantityE - (numSpecialDeals * thresholdE)
-            items["B"] = quantityB - numSpecialDeals
+        { skuA: String, quantityA: Int, quantityB: Int, thresholdA: Int ->
+            val numSpecialDeals = min(quantityA / thresholdA, quantityB)
+            val specialPrice = 2 * priceMapIndividual[skuA]!!
+            val newQuantityA = quantityA - (numSpecialDeals * thresholdA)
+            val newQuantityB = quantityB - numSpecialDeals
             numSpecialDeals * specialPrice
         },
         // Saves 20
@@ -91,3 +85,4 @@ object CheckoutSolution {
         return total
     }
 }
+
