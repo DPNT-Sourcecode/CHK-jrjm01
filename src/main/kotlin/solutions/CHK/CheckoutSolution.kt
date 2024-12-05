@@ -125,6 +125,7 @@ object CheckoutSolution {
         MultiBuy("U", 4, 120),
         MultiBuy("V", 2, 90),
         MultiBuy("V", 3, 130),
+        GroupDiscount(listOf("S", "T", "X", "Y", "Z"), 3, 45)
     ).sortedByDescending { it.totalValueSaved() }
 
     private val specialOfferPrice = { sku: String,

@@ -40,4 +40,12 @@ class CheckoutSolutionTest {
         assertEquals(550, CheckoutSolution.checkout("AEEABABAAEEERRRQ"))
         assertEquals(780, CheckoutSolution.checkout("AEEABABAAEEERRRQSPPPPP"))
     }
+
+    @Test
+    fun `group discount offers`() {
+        assertEquals(45, CheckoutSolution.checkout("SSS"))
+        assertEquals(45, CheckoutSolution.checkout("SXY"))
+        assertEquals(65, CheckoutSolution.checkout("SXYT"))
+
+    }
 }
