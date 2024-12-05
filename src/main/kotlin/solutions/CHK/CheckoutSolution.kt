@@ -1,24 +1,43 @@
 package solutions.CHK
 
-import kotlin.math.max
 import kotlin.math.min
 
 object CheckoutSolution {
 
-    private val priceMapIndividual = mapOf(
+    private val priceMap = mapOf(
         "A" to 50,
         "B" to 30,
         "C" to 20,
         "D" to 15,
         "E" to 40,
         "F" to 10,
+        "G" to 20,
+        "H" to 10,
+        "I" to 35,
+        "J" to 60,
+        "K" to 80,
+        "L" to 90,
+        "M" to 15,
+        "N" to 40,
+        "O" to 10,
+        "P" to 50,
+        "Q" to 30,
+        "R" to 50,
+        "S" to 30,
+        "T" to 20,
+        "U" to 40,
+        "V" to 50,
+        "W" to 20,
+        "X" to 90,
+        "Y" to 10,
+        "Z" to 50,
     )
 
-    private val singleItemMultiBuy = { sku: String,
-                                       threshold: Int,
-                                       specialPrice: Int,
-                                       skuB: String?,
-                                       items: MutableMap<String, Int> ->
+    private val specialOfferPrice = { sku: String,
+                                      threshold: Int,
+                                      specialPrice: Int,
+                                      skuB: String?,
+                                      items: MutableMap<String, Int> ->
         val quantity = items[sku] ?: 0
         val quantityB = skuB?.let { items[skuB] ?: 0 } ?: Int.MAX_VALUE
         val numSpecialDeals = min(quantity / threshold, quantityB)
@@ -27,24 +46,16 @@ object CheckoutSolution {
         numSpecialDeals * specialPrice
     }
 
-//    private val buySomeGetSomeFree = { skuA: String, quantityA: Int, quantityB: Int?, thresholdA: Int ->
-//        val numSpecialDeals = min(quantityA / thresholdA, quantityB)
-//        val specialPrice = thresholdA * priceMapIndividual[skuA]!!
-//        val newQuantityA = quantityA - (numSpecialDeals * thresholdA)
-//        val newQuantityB = quantityB - numSpecialDeals
-//        numSpecialDeals * specialPrice to newQuantityA to newQuantityB
-//    }
-
     private data class SpecialOfferTerms(
         val sku: String,
         val threshold: Int,
         val specialPrice: Int,
         val freeItem: String? = null
     ) {
-        fun totalValueSaved() {
+        fun totalValueSaved(): Int {
             val originalPrice =
-                (priceMapIndividual[sku]!! * threshold) +
-                        (freeItem?.let { priceMapIndividual[freeItem]!! } ?: 0)
+                (priceMap[sku]!! * threshold) +
+                        (freeItem?.let { priceMap[freeItem]!! } ?: 0)
             return specialPrice - originalPrice
         }
     }
@@ -54,18 +65,18 @@ object CheckoutSolution {
     private val specialOffers = listOf(
         // Saves 50
         SpecialOfferTerms("A", 5, 200),
-        // Saves 30 (B price)
-        SpecialOfferTerms("E", 2, 80, "B"),
         // Saves 20
         SpecialOfferTerms("A", 3, 130),
         // Saves 15
         SpecialOfferTerms("B", 2, 45),
+        // Saves 30 (B price)
+        SpecialOfferTerms("E", 2, 80, "B"),
         // Saves 10
         SpecialOfferTerms("F", 3, 20),
-    )
+    ).sortedByDescending { it.totalValueSaved() }
 
     fun checkout(skus: String): Int {
-        if (skus.any { it.toString() !in priceMapIndividual.keys }) {
+        if (skus.any { it.toString() !in priceMap.keys }) {
             return -1
         }
         var total = 0
@@ -73,17 +84,18 @@ object CheckoutSolution {
 
         // Calculate special offers first (this will mutate the map!)
         specialOffers.forEach { (sku, threshold, specialPrice, skuB) ->
-            total += singleItemMultiBuy(sku, threshold, specialPrice, skuB, items)
+            total += specialOfferPrice(sku, threshold, specialPrice, skuB, items)
         }
 
         // Calculate what's left at normal price
         items.forEach { (sku, quantity) ->
-            val normalPrice = priceMapIndividual[sku]
+            val normalPrice = priceMap[sku]
                 ?: throw RuntimeException("We shouldn't get here because we've already checked this")
             total += quantity * normalPrice
         }
         return total
     }
 }
+
 
 
