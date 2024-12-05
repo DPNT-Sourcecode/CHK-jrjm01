@@ -123,21 +123,8 @@ object CheckoutSolution {
         MultiBuy("U", 4, 120),
         MultiBuy("V", 2, 90),
         MultiBuy("V", 3, 130),
-        GroupDiscount(listOf("S", "T", "X", "Y", "Z"), 3, 45)
+        GroupDiscount(listOf("Z", "S", "T", "Y", "X"), 3, 45)
     ).sortedByDescending { it.totalValueSaved() }
-
-    private val specialOfferPrice = { sku: String,
-                                      threshold: Int,
-                                      specialPrice: Int,
-                                      skuB: String?,
-                                      items: MutableMap<String, Int> ->
-        val quantity = items[sku] ?: 0
-        val quantityB = skuB?.let { items[skuB] ?: 0 } ?: Int.MAX_VALUE
-        val numSpecialDeals = min(quantity / threshold, quantityB)
-        items[sku] = quantity - (numSpecialDeals * threshold)
-        skuB?.let { items[skuB] = quantityB - numSpecialDeals }
-        numSpecialDeals * specialPrice
-    }
 
     fun checkout(skus: String): Int {
         if (skus.any { it.toString() !in priceMap.keys }) {
