@@ -67,8 +67,8 @@ object CheckoutSolution {
         override fun calculatePriceAndUpdateItems(items: MutableMap<String, Int>): Int {
 
             val offerItems = items.filter { it.key in skus }
-            val orderedItems = offerItems.toSortedMap(compareBy { skus.indexOf(it) }).flmap { it.key to it.value }
-            val quantity = orderedItems.sumOf { it.second }
+            val orderedItems = offerItems.toSortedMap(compareBy { skus.indexOf(it) }).flatMap { it.value.take "$it.key".repeat(it.value) }
+            val quantity = offerItems.values.sumOf { it }
             val numSpecialDeals = quantity / threshold
             repeat(numSpecialDeals * threshold) { index ->
                 val sku = orderedItems[index].first
@@ -161,6 +161,7 @@ object CheckoutSolution {
         return total
     }
 }
+
 
 
 
