@@ -14,16 +14,21 @@ object CheckoutSolution {
         "F" to 10,
     )
 
+    private val singleItemMultiBuy = { sku: String, threshold: Int, specialPrice: Int, items: MutableMap<String, Int> ->
+        val quantity = items[sku] ?: 0
+        val numSpecialDeals = (quantity / threshold)
+        items[sku] = quantity - (numSpecialDeals * threshold)
+        numSpecialDeals * specialPrice
+    }
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
         // Saves 50
-        { items: MutableMap<String, Int> ->
-            val quantity = items["A"] ?: 0
-            val threshold = 5
+        singleItemMultiBuy("A", 5, 200, )
+        { sku: String, threshold: Int, specialPrice: Int, items: MutableMap<String, Int> ->
+            val quantity = items[sku] ?: 0
             val numSpecialDeals = (quantity / threshold)
-            val specialPrice = 200
-            items["A"] = quantity - (numSpecialDeals * threshold)
+            items[sku] = quantity - (numSpecialDeals * threshold)
             numSpecialDeals * specialPrice
         },
         // Saves 30 (B price)
