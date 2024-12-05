@@ -161,10 +161,3 @@ object CheckoutSolution {
         return total
     }
 }
-
-
-
-
-
-
-
