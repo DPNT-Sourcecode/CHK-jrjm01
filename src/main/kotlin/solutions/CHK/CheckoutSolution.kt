@@ -70,7 +70,7 @@ object CheckoutSolution {
             val numSpecialDeals = quantity / threshold
             repeat(numSpecialDeals * threshold) { index ->
                 val sku = orderedItems[index].toString()
-                items[sku]?.dec()
+                items[sku] = items[sku]!!.dec()
             }
             return numSpecialDeals * specialPrice
         }
