@@ -50,18 +50,21 @@ object CheckoutSolution {
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
-        // Saves 50
         SpecialOfferTerms("A", 5, 200),
-        // Saves 20
         SpecialOfferTerms("A", 3, 130),
-        // Saves 15
         SpecialOfferTerms("B", 2, 45),
-        // Saves 30 (B price)
         SpecialOfferTerms("E", 2, 80, "B"),
-        // Saves 10
         SpecialOfferTerms("F", 3, 20),
         SpecialOfferTerms("H", 5, 45),
         SpecialOfferTerms("H", 10, 80),
+        SpecialOfferTerms("K", 2, 150),
+        SpecialOfferTerms("N", 3, 120, "M"),
+        SpecialOfferTerms("P", 5, 200),
+        SpecialOfferTerms("Q", 3, 80),
+        SpecialOfferTerms("R", 3, 150, "Q"),
+        SpecialOfferTerms("U", 4, 120),
+        SpecialOfferTerms("V", 2, 90),
+        SpecialOfferTerms("V", 3, 130),
     ).sortedByDescending { it.totalValueSaved() }
 
     private val specialOfferPrice = { sku: String,
@@ -98,7 +101,3 @@ object CheckoutSolution {
         return total
     }
 }
-
-
-
-
