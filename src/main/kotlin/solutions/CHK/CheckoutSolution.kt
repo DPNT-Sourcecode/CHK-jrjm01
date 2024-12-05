@@ -21,48 +21,26 @@ object CheckoutSolution {
         numSpecialDeals * specialPrice to newQuantity
     }
 
+    private val buySomeGetSomeFree = { skuA: String, quantityA: Int, quantityB: Int, thresholdA: Int ->
+        val numSpecialDeals = min(quantityA / thresholdA, quantityB)
+        val specialPrice = 2 * priceMapIndividual[skuA]!!
+        val newQuantityA = quantityA - (numSpecialDeals * thresholdA)
+        val newQuantityB = quantityB - numSpecialDeals
+        numSpecialDeals * specialPrice to newQuantityA to newQuantityB
+    }
     // These must be ordered by the value they save to get the customer the best price
     // !! is only safe because we will have already checked for values not in the map
     private val specialOffers = listOf(
         // Saves 50
         "A" to 5 to 200 to singleItemMultiBuy,
-        // Saves 20
-        "A" to 3 to 200 to singleItemMultiBuy,
         // Saves 30 (B price)
-        { skuA: String, quantityA: Int, quantityB: Int, thresholdA: Int ->
-            val numSpecialDeals = min(quantityA / thresholdA, quantityB)
-            val specialPrice = 2 * priceMapIndividual[skuA]!!
-            val newQuantityA = quantityA - (numSpecialDeals * thresholdA)
-            val newQuantityB = quantityB - numSpecialDeals
-            numSpecialDeals * specialPrice
-        },
+        "E" to 2 to 1 to buySomeGetSomeFree,
         // Saves 20
-        { items: MutableMap<String, Int> ->
-            val quantity = items["A"] ?: 0
-            val threshold = 3
-            val numSpecialDeals = (quantity / threshold)
-            val specialPrice = 130
-            items["A"] = quantity - (numSpecialDeals * threshold)
-            numSpecialDeals * specialPrice
-        },
+        "A" to 3 to 130 to singleItemMultiBuy,
         // Saves 15
-        { items: MutableMap<String, Int>  ->
-            val quantity = items["B"] ?: 0
-            val threshold = 2
-            val numSpecialDeals = (quantity / threshold)
-            val specialPrice = 45
-            items["B"] = quantity - (numSpecialDeals * threshold)
-            numSpecialDeals * specialPrice
-        },
+        "B" to 2 to 45 to singleItemMultiBuy,
         // Saves 10
-        { items: MutableMap<String, Int>  ->
-            val quantity = items["F"] ?: 0
-            val threshold = 3
-            val numSpecialDeals = (quantity / threshold)
-            val specialPrice = 20
-            items["F"] = quantity - (numSpecialDeals * threshold)
-            numSpecialDeals * specialPrice
-        },
+        "F" to 3 to 10 to singleItemMultiBuy,
     )
     fun checkout(skus: String): Int {
         if (skus.any { it.toString() !in priceMapIndividual.keys }) {
@@ -85,4 +63,5 @@ object CheckoutSolution {
         return total
     }
 }
+
 
