@@ -6,8 +6,8 @@ import kotlin.math.roundToInt
 object CheckoutSolution {
 
     private interface SpecialOfferTerms {
-        fun totalValueSaved() : Int
-        fun calculatePriceAndUpdateItems(items: MutableMap<String, Int>) : Int
+        fun totalValueSaved(): Int
+        fun calculatePriceAndUpdateItems(items: MutableMap<String, Int>): Int
     }
 
     private data class MultiBuy(
@@ -65,11 +65,13 @@ object CheckoutSolution {
         }
 
         override fun calculatePriceAndUpdateItems(items: MutableMap<String, Int>): Int {
+
             val offerItems = items.filter { it.key in skus }
-                val orderItems = skus.map { it }
-            val quantity = offerItems.values.sum()
+            val orderedItems = skus.mapNotNull { offerItems..[it] }
+            val quantity = orderedItems.sum()
             val numSpecialDeals = quantity / threshold
-            repeat(numSpecialDeals) {
+            repeat(numSpecialDeals * threshold) { index ->
+                items[orderedItems[index]]?.dec()
 
             }
             items[sku] = quantity - (numSpecialDeals * threshold)
