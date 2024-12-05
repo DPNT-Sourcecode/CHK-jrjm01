@@ -14,16 +14,24 @@ object CheckoutSolution {
         "F" to 10,
     )
 
-    private val singleItemMultiBuy = { sku: String, threshold: Int, specialPrice: Int, items: MutableMap<String, Int> ->
+    private val singleItemMultiBuy = { sku: String,
+                                       threshold: Int,
+                                       specialPrice: Int,
+                                       skuB: String?,
+                                       quantityB: Int?,
+                                       items: MutableMap<String, Int> ->
         val quantity = items[sku] ?: 0
         val numSpecialDeals = (quantity / threshold)
-        val newQuantity = quantity - (numSpecialDeals * threshold)
-        numSpecialDeals * specialPrice to newQuantity
+        items[sku] = quantity - (numSpecialDeals * threshold)
+        if (quantityB != null && skuB != null) {
+            items[skuB] = quantityB - numSpecialDeals
+        }
+        numSpecialDeals * specialPrice
     }
 
-    private val buySomeGetSomeFree = { skuA: String, quantityA: Int, quantityB: Int, thresholdA: Int ->
+    private val buySomeGetSomeFree = { skuA: String, quantityA: Int, quantityB: Int?, thresholdA: Int ->
         val numSpecialDeals = min(quantityA / thresholdA, quantityB)
-        val specialPrice = 2 * priceMapIndividual[skuA]!!
+        val specialPrice = thresholdA * priceMapIndividual[skuA]!!
         val newQuantityA = quantityA - (numSpecialDeals * thresholdA)
         val newQuantityB = quantityB - numSpecialDeals
         numSpecialDeals * specialPrice to newQuantityA to newQuantityB
@@ -52,9 +60,9 @@ object CheckoutSolution {
         val items =  skus.split("").filter { it.isNotEmpty() }.groupingBy { it }.eachCount().toMutableMap()
 
         // Calculate special offers first (this will mutate the map!)
-//        specialOffers.forEach { (sku, threshold, specialPrice, priceFn) ->
-//            total += priceFn(sku, threshold)
-//        }
+        specialOffers.forEach { (sku, threshold, specialPrice, priceFn) ->
+            total += priceFn(sku, threshold)
+        }
 
         // Calculate what's left at normal price
         items.forEach { (sku, quantity) ->
@@ -65,7 +73,3 @@ object CheckoutSolution {
         return total
     }
 }
-
-
-
-
