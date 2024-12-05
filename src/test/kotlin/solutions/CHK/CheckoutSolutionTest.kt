@@ -37,5 +37,7 @@ class CheckoutSolutionTest {
     @Test
     fun `lots of special offers`() {
         assertEquals(400, CheckoutSolution.checkout("AEEABABAAEEE"))
+        assertEquals(550, CheckoutSolution.checkout("AEEABABAAEEERRRQ"))
+        assertEquals(780, CheckoutSolution.checkout("AEEABABAAEEERRRQSPPPPP"))
     }
 }
